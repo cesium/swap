@@ -38,6 +38,7 @@ This project was developed with the Board of Directors of the University of Minh
 - To configure the Vagrant VM run 
 ```
 vagrant up
+<<<<<<< HEAD
 vagrant ssh
 ```
 
@@ -55,6 +56,18 @@ npm install
 ```
 
 
+=======
+```
+
+> **Note**: If the prespecified IP in ```Vagrantfile``` is already in use, you need to change it before running ```vagrant up```
+
+- Install node packages (in host machine)
+```
+npm install
+```
+
+
+>>>>>>> 1720780 (Updated documentation for new build process)
 ## Building and running
 
 - Build assets (in your host machine)
