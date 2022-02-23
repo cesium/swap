@@ -37,6 +37,13 @@ This project was developed with the Board of Directors of the University of Minh
 - To configure the Vagrant VM run 
 ```
 vagrant up
+vagrant ssh
+```
+
+- In the VM run
+```
+cd /vagrant
+bash bootstrap.sh
 ```
 
 > **Note**: If the prespecified IP in ```Vagrantfile``` is already in use, you need to change it before running ```vagrant up```
