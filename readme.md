@@ -25,6 +25,7 @@ This project was developed with the Board of Directors of the University of Minh
 - [Composer](https://getcomposer.org/) - Installs package dependencies
 - [NodeJS](https://nodejs.org/en/) - Provides NPM to install node packages
 - [Vagrant](https://vagrantup.com) - Provides a fast, reliable and secure node package manager.
+- [VirtualBox](https://www.virtualbox.org/) - Virtual machine provider for Vagrant
 
 ## Installation
 
