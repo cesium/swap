@@ -1,5 +1,5 @@
 <tr>
-    <td class="exchange-icon"><img alt="switch" height="24" src="{{ asset('images/switch-vertical.svg') }}"></td>
+    <td class="exchange-icon d-none d-sm-table-cell"><img alt="switch" height="24" src="{{ asset('images/switch-vertical.svg') }}"></td>
     <td>
         {{ $exchange->course()->name }}
         <br>
