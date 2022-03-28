@@ -16,10 +16,10 @@ class solver extends Model
 	 * @param \Illuminate\Database\Eloquent\Builder $query
 	 * @param Course								$course
 	 */
-	public function SolveAutomicExchangesOfCourse($query,Course $course)
+	public static function SolveAutomicExchangesOfCourse($query,Course $course)
 	{
 		$url = 'http://0.0.0.0:4567/';
-		$request = collect(['exchange_requests'=>changeExchangeToSolverType($course->automaticExchanges())]);
+		$request = collect(['exchange_requests'=>Solver::changeExchangeToSolverType($course->automaticExchanges())]);
 
 		$response = Http::post($url,$request->toJson());
 		if (!$response->successful()) {
@@ -36,7 +36,7 @@ class solver extends Model
 	 *
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	private function changeExchangeToSolverType($query){
+	private static function changeExchangeToSolverType($query){
 		return $query->map(function ($exchange){
 			return array(
 				'id'=>$exchange->id,

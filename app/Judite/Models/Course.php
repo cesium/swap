@@ -88,6 +88,6 @@ class Course extends Model
 	{
 		return $this->enrollments()->map(function ($enrollment) {
 			return $enrollment->exchangesAsSource()->get();
-		})->where('to_enrollment_id', '=', NULL);
+		})->where('to_enrollment_id', '=', NULL)->lockForUpdate();
 	}
 }

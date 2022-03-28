@@ -6,6 +6,7 @@ use App\Judite\Models\Course;
 use App\Judite\Models\Exchange;
 use App\Judite\Models\Enrollment;
 use App\Judite\Models\Shift;
+use App\Judite\Models\solver;
 use Illuminate\Support\Facades\DB;
 use App\Events\ExchangeWasConfirmed;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,7 @@ class EnrollmentAutomaticExchangeController extends Controller
 
 				return compact('shift_tag', 'matchingShifts');
 			});
-			return view('exchanges.create', $data);
+			return view('autoExchanges.create', $data);
 
 		} catch (\LogicException $e) {
 			flash($e->getMessage())->error();
@@ -69,6 +70,7 @@ class EnrollmentAutomaticExchangeController extends Controller
 	public function store($id, CreateRequest $request)
 	{
 		try {
+
 			$exchange = DB::transaction(function () use ($id, $request) {
 
 
@@ -85,10 +87,11 @@ class EnrollmentAutomaticExchangeController extends Controller
 
 				return $exchange;
 			});
-
+            DB::beginTransaction();
 			$message = 'The exchange was successfully saved';
 			flash($message)->success();
-			//maybe va por aqui a merda de fazer a cena de perdir ao solver a merda idk idc
+            Solver::SolveAutomicExchangesOfCourse(DB::query,$exchange->course());
+            DB::commit();
 
 		} catch (EnrollmentCannotBeExchangedException | ExchangeEnrollmentsOnDifferentCoursesException $e) {
 			flash($e->getMessage())->error();
