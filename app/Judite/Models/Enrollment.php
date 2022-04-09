@@ -97,6 +97,9 @@ class Enrollment extends Model
 			$enrollment->shift()->associate($fromShiftId);
 			$enrollment->save();
 		}
+        else{
+            $enrollment->delete();
+        }
 
         $this->save();
 
