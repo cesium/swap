@@ -86,8 +86,10 @@ class Course extends Model
 	 */
 	public function automaticExchanges()
 	{
-		return $this->enrollments()->map(function ($enrollment) {
-			return $enrollment->exchangesAsSource()->get();
-		})->where('to_enrollment_id', '=', NULL)->lockForUpdate();
+        $enrollments = $this->enrollments()->get('id')->toArray();
+        return Exchange::whereNull('to_enrollment_id')->whereIn('from_enrollment_id',$enrollments);
+		//return $this->enrollments()->each(function ($enrollment) {
+		//	return $enrollment->exchangesAsSource()->first();
+		//})->whereNull('to_enrollment_id')->lockForUpdate();
 	}
 }
