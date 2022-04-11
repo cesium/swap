@@ -93,14 +93,8 @@ class Enrollment extends Model
     {
         $fromShiftId = $this->shift_id;
         $this->shift()->associate($enrollment->shift_id);
-		if ($enrollment->student!==NULL) {
-			$enrollment->shift()->associate($fromShiftId);
-			$enrollment->save();
-		}
-        else{
-            $enrollment->delete();
-        }
-
+        $enrollment->shift()->associate($fromShiftId);
+		$enrollment->save();
         $this->save();
 
         return $this;

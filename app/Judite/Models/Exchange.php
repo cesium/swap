@@ -256,5 +256,6 @@ class Exchange extends Model
         self::whereIn('from_enrollment_id', $enrollmentIds)
             ->orWhereIn('to_enrollment_id', $enrollmentIds)
             ->delete();
+        Enrollment::whereIn('id',$enrollmentIds)->whereNull('student_id')->delete();
     }
 }

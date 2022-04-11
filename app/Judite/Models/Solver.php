@@ -4,7 +4,7 @@ namespace App\Judite\Models;
 
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Http;
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,15 +17,16 @@ class solver extends Model
 	 */
 	public static function SolveAutomicExchangesOfCourse(Course $course)
 	{
-		$url = 'http://10.0.0.2:4567/';
-		$request = collect(['exchange_requests'=>Solver::changeExchangeToSolverType($course->automaticExchanges())]);
+        $client = new Client();
+		$url = 'http://10.0.2.2:4567/';
+        //var_dump($course->automaticExchanges());
+        //var_dump(Solver::changeExchangeToSolverType($course->automaticExchanges()));
+        $response = $client->request('POST',$url,['body'=>json_encode(['exchange_requests' => Solver::changeExchangeToSolverType($course->automaticExchanges())])]);
 
-		$response = Http::post($url,$request->toJson());
-		if (!$response->successful()) {
-			echo "error";
-		}
-		$exchanges_ids = json_decode($request->JSON(), true);
-		Exchange::FindMany($exchanges_ids)->each()->perform();
+		$exchanges_ids = json_decode($response->getBody(), true)["solved_exchanges"];
+        foreach ($exchanges_ids as $exchange_id){
+            Exchange::Find($exchange_id)->perform();
+        }
         return $exchanges_ids;
 	}
 
@@ -37,16 +38,15 @@ class solver extends Model
 	 * @return array
 	 */
 	private static function changeExchangeToSolverType($query){
-        $values = [];
-        foreach($query as $exchange){
-            $values[] = array(
+        $values = collect();
+        $query->each(function ($exchange) use ($values) {
+            $values->push(array(
                 'id' => $exchange->id,
-                'from_shift_id' => $exchange->fromEnrollment()->shift()->id,
-                'to_shift_id' => $exchange->toEnrollment()->shift()->id,
-                'created_at' => $exchange->updated_at
-            );
-
-    }
+                'from_shift_id' => $exchange->fromShift()->tag,
+                'to_shift_id' => $exchange->toShift()->tag,
+                'created_at' => $exchange->updated_at->timestamp
+            ));
+        });
         return $values;
 	}
 
