@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Exchange;
+namespace App\Http\Requests\AutoExchange;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,7 +24,7 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'to_shift_id' => 'required',
+            'to_shift_tag' => 'required',
         ];
     }
 }

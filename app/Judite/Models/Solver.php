@@ -19,10 +19,7 @@ class solver extends Model
 	{
         $client = new Client();
 		$url = 'http://10.0.2.2:4567/';
-        //var_dump($course->automaticExchanges());
-        //var_dump(Solver::changeExchangeToSolverType($course->automaticExchanges()));
         $response = $client->request('POST',$url,['body'=>json_encode(['exchange_requests' => Solver::changeExchangeToSolverType($course->automaticExchanges())])]);
-
 		$exchanges_ids = json_decode($response->getBody(), true)["solved_exchanges"];
         foreach ($exchanges_ids as $exchange_id){
             Exchange::Find($exchange_id)->perform();

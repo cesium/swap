@@ -17,11 +17,11 @@
                     <div class="form-text text-danger">{{ $errors->first('from_enrollment_id') }}</div>
                 </div>
 
-                {{-- To enrollment--}}
+                {{-- To shift--}}
                 <div class="form-group">
                     <label>To Shift <label>
-                    <shift-select name="to_enrollment_id" :options="{{ $enrollment->course()->shifts() }}"></shift-select>
-                    <div class="form-text text-danger">{{ $errors->first('to_enrollment_id') }}</div>
+                    <shift-select name="to_shift_tag" :options="{{ $matchingShifts}}"></shift-select>
+                    <div class="form-text text-danger">{{ $errors->first('to_shift_tag') }}</div>
                 </div>
 
                 {{-- Submit --}}

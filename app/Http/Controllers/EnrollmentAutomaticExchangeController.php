@@ -10,7 +10,7 @@ use App\Judite\Models\solver;
 use Illuminate\Support\Facades\DB;
 use App\Events\ExchangeWasConfirmed;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Exchange\CreateRequest;
+use App\Http\Requests\AutoExchange\CreateRequest;
 use App\Exceptions\EnrollmentCannotBeExchangedException;
 use App\Exceptions\ExchangeEnrollmentsOnDifferentCoursesException;
 
@@ -39,17 +39,24 @@ class EnrollmentAutomaticExchangeController extends Controller
 		try {
 			$data = DB::transaction(function () use ($id) {
 				$enrollment = Auth::student()->enrollments()->findOrFail($id);
-				$course = $enrollment->course();
-				$shift_tag = $enrollment->shift()->tag;
+				$course = $enrollment->course()->first();
+				$to_shift_tag = $enrollment->shift()->value('tag');
 
 				if (! $enrollment->availableForExchange()) {
 					throw new \LogicException('The enrollment is not available for exchange.');
 				}
 
-				$matchingShifts = $course->shifts()->where('tag','!=',$shift_tag)->each()->tag;
+				$matchingShifts = $course->shifts()->where('tag','!=',$to_shift_tag)->orderBy('tag','asc')->get();
 
-				return compact('shift_tag', 'matchingShifts');
+				return compact('enrollment','to_shift_tag', 'matchingShifts');
 			});
+
+            $data['matchingShifts'] = $data['matchingShifts']->map(function ($item) {
+                return [
+                    'tag' => $item->tag,
+                    '_toString' => $item->present()->inlineToString(),
+                ];
+            });
 			return view('autoExchanges.create', $data);
 
 		} catch (\LogicException $e) {
@@ -63,7 +70,7 @@ class EnrollmentAutomaticExchangeController extends Controller
 	 * Store a newly created resource in storage.
 	 *
 	 * @param int                                       $id
-	 * @param \App\Http\Requests\Exchange\CreateRequest $request
+	 * @param \App\Http\Requests\AutoExchange\CreateRequest $request
 	 *
 	 * @return \Illuminate\Http\RedirectResponse
 	 */
@@ -75,11 +82,12 @@ class EnrollmentAutomaticExchangeController extends Controller
 
 
 				$fromEnrollment = Auth::student()->enrollments()->findOrFail($id);
-				$toShift = $fromEnrollment->course()->getShiftByTag($request->input('shift_tag'));
+                $toShift = $fromEnrollment->course()->first()->getShiftByTag($request->input('to_shift_tag'));
 				$toEnrollment = Enrollment::make();
-				$toEnrollment->student = NULL;
-				$toEnrollment->course()->associate($fromEnrollment->course);
-				$toEnrollment->Shift()->associate($toShift);
+				$toEnrollment->student()->associate(null);
+				$toEnrollment->course()->associate($fromEnrollment->course()->first());
+				$toEnrollment->shift()->associate($toShift);
+                $toEnrollment->save();
 
 				$exchange = Exchange::make();
 				$exchange->setExchangeEnrollments($fromEnrollment, $toEnrollment);
@@ -90,7 +98,7 @@ class EnrollmentAutomaticExchangeController extends Controller
             DB::beginTransaction();
 			$message = 'The exchange was successfully saved';
 			flash($message)->success();
-            Solver::SolveAutomicExchangesOfCourse(DB::query,$exchange->course());
+            Solver::SolveAutomicExchangesOfCourse($exchange->course());
             DB::commit();
 
 		} catch (EnrollmentCannotBeExchangedException | ExchangeEnrollmentsOnDifferentCoursesException $e) {

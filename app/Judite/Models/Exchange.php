@@ -139,6 +139,9 @@ class Exchange extends Model
     {
         $fromEnrollmentCopy = clone $this->fromEnrollment;
         $toEnrollmentCopy = clone $this->toEnrollment;
+        if ($toEnrollmentCopy->student==null){
+            $toEnrollmentCopy->student=$fromEnrollmentCopy->student;
+        }
 
         $this->fromEnrollment->exchange($this->toEnrollment);
 
