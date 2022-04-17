@@ -94,9 +94,10 @@ class Enrollment extends Model
         $fromShiftId = $this->shift_id;
         $this->shift()->associate($enrollment->shift_id);
         $enrollment->shift()->associate($fromShiftId);
-	$enrollment->save();
+	
         $this->save();
-
+	$enrollment->save();
+	   
         return $this;
     }
 
