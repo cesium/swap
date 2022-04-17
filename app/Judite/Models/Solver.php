@@ -18,7 +18,7 @@ class solver extends Model
 	public static function SolveAutomicExchangesOfCourse(Course $course)
 	{
         $client = new Client();
-		$url = 'http://10.0.2.2:4567/';
+		$url = env('SOLVER_URL','10.0.2.2').":".env('SOLVER_PORT','4567');
         $response = $client->request('POST',$url,['body'=>json_encode(['exchange_requests' => Solver::changeExchangeToSolverType($course->automaticExchanges())])]);
 		$exchanges_ids = json_decode($response->getBody(), true)["solved_exchanges"];
         foreach ($exchanges_ids as $exchange_id){
