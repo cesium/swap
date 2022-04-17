@@ -84,9 +84,4 @@ class ExchangeController extends Controller
         return redirect()->back();
     }
 
-	public function automatic($id){
-
-	}
-
-
 }
