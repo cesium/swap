@@ -38,7 +38,6 @@ This project was developed with the Board of Directors of the University of Minh
 - To configure the Vagrant VM run 
 ```
 vagrant up
-<<<<<<< HEAD
 vagrant ssh
 ```
 
