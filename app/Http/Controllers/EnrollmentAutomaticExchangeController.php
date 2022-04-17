@@ -82,12 +82,12 @@ class EnrollmentAutomaticExchangeController extends Controller
 
 
 				$fromEnrollment = Auth::student()->enrollments()->findOrFail($id);
-                $toShift = $fromEnrollment->course()->first()->getShiftByTag($request->input('to_shift_tag'));
+                                $toShift = $fromEnrollment->course()->first()->getShiftByTag($request->input('to_shift_tag'));
 				$toEnrollment = Enrollment::make();
 				$toEnrollment->student()->associate(null);
 				$toEnrollment->course()->associate($fromEnrollment->course()->first());
 				$toEnrollment->shift()->associate($toShift);
-                $toEnrollment->save();
+                               $toEnrollment->save();
 
 				$exchange = Exchange::make();
 				$exchange->setExchangeEnrollments($fromEnrollment, $toEnrollment);
@@ -96,8 +96,8 @@ class EnrollmentAutomaticExchangeController extends Controller
 				return $exchange;
 			});
             DB::beginTransaction();
-			$message = 'The exchange was successfully saved';
-			flash($message)->success();
+	    $message = 'The exchange was successfully saved';
+	    flash($message)->success();
             Solver::SolveAutomicExchangesOfCourse($exchange->course());
             DB::commit();
 
