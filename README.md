@@ -16,7 +16,7 @@ Swap simplifies the control of enrollments and shifts exchanges for both student
 - Shifts are assigned to enrollments by teachers;
 - Students propose and confirm shift exchanges among them.
 
-This project was developed with the Board of Directors of the University of Minho Informatics Engineering Integrated Masters  and counts on several Hackathonners who either concluded the aforementioned Masters or are in the process of doing so.
+This project was developed with the Board of Directors of the University of Minho Informatics Engineering Integrated Masters and counts on several Hackathonners who either concluded the aforementioned Masters or are in the process of doing so.
 
 ## Requirements
 
@@ -30,49 +30,60 @@ This project was developed with the Board of Directors of the University of Minh
 ## Installation
 
 - Clone or download this repository.
-- Rename `.env.example` to `.env` and fill the options
+- Rename `.env.example` to `.env` and fill the options.
+
+```
+cp -n .env.example .env
+```
 > **Note**: This project sends e-mails. Therefore, ensure that the e-mail driver is specified.
 
 ### Setting up Vagrant
 
-- To configure the Vagrant VM run 
+- To configure the Vagrant VM run
+
 ```
 vagrant up
 vagrant ssh
 ```
 
 - In the VM run
+
 ```
 cd /vagrant
 bash bootstrap.sh
 ```
 
-> **Note**: If the prespecified IP in ```Vagrantfile``` is already in use, you need to change it before running ```vagrant up```
+> **Note**
+> If the prespecified IP in `Vagrantfile` is already in use, you need to change
+> it before running `vagrant up`.
 
 - Install node packages (in host machine)
+
 ```
 npm install
 ```
 
-
 ## Building and running
 
 - Build assets (in your host machine)
+
 ```
 npm run dev
 ```
 
 - SSH into the VM
+
 ```
 vagrant ssh
 ```
 
-- Start the server
+- Start the server and visit <http://localhost:8000>.
+
 ```
 cd /vagrant
 php artisan serve --host=0.0.0.0 # We specifiy the host IP to be able to access server outside VM
 ```
 
-- In your browser, open http://192.168.56.21:8000 
 ## License
+
 The Swap project is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
