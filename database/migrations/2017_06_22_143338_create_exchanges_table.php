@@ -16,9 +16,11 @@ class CreateExchangesTable extends Migration
             $table->integer('from_enrollment_id')->unsigned();
             $table->integer('to_enrollment_id')->unsigned();
             $table->timestamps();
+            $table->integer('conditionalID')->unsigned();
 
             $table->foreign('from_enrollment_id')->references('id')->on('enrollments');
             $table->foreign('to_enrollment_id')->references('id')->on('enrollments');
+            $table->foreign('conditionalID')->references('id')->on('conditionalExchanges');
         });
     }
 

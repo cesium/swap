@@ -23,5 +23,6 @@ $factory->define(ExchangeRegistryEntry::class, function (Faker\Generator $faker)
         'to_shift_id' => $exchange->toShift(),
         'from_student_id' => $exchange->fromStudent(),
         'to_student_id' => $exchange->toStudent(),
+        'conditionalID' => $exchange->conditionalID(),
     ];
 });
