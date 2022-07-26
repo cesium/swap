@@ -22,6 +22,8 @@ $factory->define(Exchange::class, function (Faker\Generator $faker) {
     return [
         'from_enrollment_id' => factory(Enrollment::class)->create(['course_id' => $course->id])->id,
         'to_enrollment_id' => factory(Enrollment::class)->create(['course_id' => $course->id])->id,
-        'conditionalID' => $faker->optional(), // nao tou a ver como deixar isto um numero que coincida com os numeros gerados
+        'conditionalID' => function () {
+            return factory(ConditionalExchange::class)->create()->id;
+        },
     ];
 });

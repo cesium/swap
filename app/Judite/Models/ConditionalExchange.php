@@ -1,29 +1,41 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Database\Migrations\Migration;
+namespace App\Judite\Models;
 
-class CreateConditionalExchange extends Migration
+use Illuminate\Database\Eloquent\Model;
+
+class ConditionalExchange extends Model
 {
     /**
-     * Run the migrations.
-     */
-    public function up()
-    {
-        Schema::create('conditionalExchange', function (Blueprint $table) {
-            $table->increments('id');
-            //tou na duvida do que meter aqui pois faz sentido ter um ID, mas os campos deveria ser "para cada exchange condicional a lista de exchanges a fazer", a cena é que não estou assim de 1a a ver como fazer isso
-//depois ia por como foreign key os ids das exchanges a fazer
-            
-        });
-    }
+	 * Get exchanges of the conditional exchange
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
+	 */
+    public function exchanges()
+	{
+		return $this->hasMany(Exchange::class);
+	}
 
     /**
-     * Reverse the migrations.
-     */
-    public function down()
+	 * Add exchange to this conditional exchange.
+	 *
+	 * @param \App\Judite\Models\Shift $shift
+	 *
+	 * @return $this
+	 */
+    public function addExchange(Exchange $exchange): self
+	{
+		$this->exchanges()->save($exchange);
+
+		return $this;
+	}
+
+    /**
+	 * Get the exchanges of this conditional exchange.
+	 *
+	 */
+    public function getExchanges()
     {
-        Schema::dropIfExists('settings');
+        return $this->exchanges();
     }
 }

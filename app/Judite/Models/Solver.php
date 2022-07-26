@@ -27,6 +27,22 @@ class solver extends Model
         return $exchanges_ids;
 	}
 
+	public static function SolveConditionalExchanges()
+	{
+		$client = new Client();
+		$url = env('SOLVER_URL','10.0.2.2').":".env('SOLVER_PORT','4567');
+        $response = $client->request('POST',$url,['body'=>json_encode(['exchange_requests' => Solver::changeConditionalExchangeToSolverType(ConditionalExchange::all())])]);
+		$conditional_exchanges_ids = json_decode($response->getBody(), true)["solved_exchanges"];
+		foreach ($conditional_exchanges_ids as $conditional_exchanges_id){
+            $conditionalExchange = ConditionalExchange::Find($conditional_exchanges_id);
+			$exchanges = $conditionalExchange->hasMany(Exchange::Class);
+			foreach ($exchanges as $exchange){
+				$exchange->perform();
+			}
+        }
+        return $exchanges_ids;
+	}
+
 	/**
 	 * changes the exchange format to the one used by the solver
 	 *
@@ -42,6 +58,28 @@ class solver extends Model
                 'from_shift_id' => $exchange->fromShift()->tag,
                 'to_shift_id' => $exchange->toShift()->tag,
                 'created_at' => $exchange->updated_at->timestamp
+            ));
+        });
+        return $values;
+	}
+
+	private static function changeConditionalExchangeToSolverType($query){
+		$values = collect();
+		$query->each(function ($conditionalExchange) use ($values) {
+			$exchanges = $conditionalExchange->hasMany(Exchange::Class);
+            $values->push(array(
+                'id' => $conditionalExchange->id,
+				'timestamp' => $conditionalExchange->timestamp,
+				'student' => $exchanges->first()->fromStudent(),
+				'exchanges' => array_map(function($exchange){
+					return[
+						'id' => $exchange->id,
+						'course' => $exchange->course()->name,
+						'from_shift' => $exchange->fromShift->tag,
+						'to_shift' => $exchange->toShift->tag,
+					];
+				}
+				,$exchanges)
             ));
         });
         return $values;

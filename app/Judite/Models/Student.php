@@ -159,4 +159,23 @@ class Student extends Model
     {
         return $query->where('student_number', $studentNumber);
     }
+
+    public function getCourseEnrollments(){
+        $studentEnrollments = $this->enrollments;
+        $values = array();
+        $counter = 0;
+        foreach($studentEnrollments as $enrollment){
+            $counter=$counter+1;
+            if ($enrollment->availableForExchange()) {	
+                $course = $enrollment->course;
+                $from_shift_tag = $enrollment->shift()->value('tag');
+                $matchingShifts = $course->shifts()->where('tag','!=',$from_shift_tag)->orderBy('tag','asc')->get();
+                $values[$course->name]=array('fromEnrollment' => $enrollment,
+                                             'matchingShifts' => $matchingShifts);    
+                                             print(implode("\n",$values[$course->name]));
+                                            }
+        }
+        return $values;
+    }
+
 }
