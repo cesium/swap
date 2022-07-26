@@ -31,16 +31,18 @@ class solver extends Model
 	{
 		$client = new Client();
 		$url = env('SOLVER_URL','10.0.2.2').":".env('SOLVER_PORT','4567');
-        $response = $client->request('POST',$url,['body'=>json_encode(['exchange_requests' => Solver::changeConditionalExchangeToSolverType(ConditionalExchange::all())])]);
+		$response = $client->request('POST',$url,['body'=>json_encode(['exchange_requests' => Solver::changeConditionalExchangeToSolverType(ConditionalExchange::all())])]);
 		$conditional_exchanges_ids = json_decode($response->getBody(), true)["solved_exchanges"];
+		$collection = collect();
 		foreach ($conditional_exchanges_ids as $conditional_exchanges_id){
             $conditionalExchange = ConditionalExchange::Find($conditional_exchanges_id);
 			$exchanges = $conditionalExchange->hasMany(Exchange::Class);
 			foreach ($exchanges as $exchange){
 				$exchange->perform();
+				$collection->push($exchange->id);
 			}
         }
-        return $exchanges_ids;
+        return $collection;
 	}
 
 	/**
