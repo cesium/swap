@@ -33,4 +33,9 @@ class Shift extends Model
         return $this->belongsTo(Course::class);
     }
 
+    public function shiftschedule()
+    {
+        return $this->hasMany(SchiftSchedule::class);
+    }
+
 }

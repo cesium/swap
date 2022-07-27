@@ -47,3 +47,6 @@ Route::get('/exchanges', 'Admin\ExchangeController@index')->name('exchanges.inde
 
 Route::get('/settings/edit', 'Admin\SettingsController@edit')->name('settings.edit');
 Route::put('/settings', 'Admin\SettingsController@update')->name('settings.update');
+
+Route::get('/shiftschedule/import', 'Admin\ShiftScheduleController@import')->name('shiftschedule.import');
+Route::post('/shiftschedule/import', 'Admin\ShiftScheduleController@importStore')->name('shiftschedule.importStore');;
